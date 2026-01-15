@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using WinBoostHotkeys.Resources;
 
 namespace WinBoostHotkeys
 {
@@ -41,19 +42,19 @@ namespace WinBoostHotkeys
             _contextMenu = new ContextMenuStrip();
 
             // Toggle Boost menu item
-            _toggleBoostMenuItem = new ToolStripMenuItem("Toggle Boost");
+            _toggleBoostMenuItem = new ToolStripMenuItem(Strings.MenuBoost);
             _toggleBoostMenuItem.Click += ToggleBoostMenuItem_Click;
             _contextMenu.Items.Add(_toggleBoostMenuItem);
 
             _contextMenu.Items.Add(new ToolStripSeparator());
 
-            // Settings menu item (placeholder for now)
-            var settingsMenuItem = new ToolStripMenuItem("Settings");
+            // Settings menu item
+            var settingsMenuItem = new ToolStripMenuItem(Strings.MenuSettings);
             settingsMenuItem.Click += SettingsMenuItem_Click;
             _contextMenu.Items.Add(settingsMenuItem);
 
             // Exit menu item
-            var exitMenuItem = new ToolStripMenuItem("Exit");
+            var exitMenuItem = new ToolStripMenuItem(Strings.MenuExit);
             exitMenuItem.Click += ExitMenuItem_Click;
             _contextMenu.Items.Add(exitMenuItem);
 
@@ -62,7 +63,7 @@ namespace WinBoostHotkeys
             {
                 Icon = IconHelper.CreateBlueIcon(), // Default to OFF (blue)
                 ContextMenuStrip = _contextMenu,
-                Text = "WinBoostHotkeys",
+                Text = Strings.AppName,
                 Visible = true
             };
 
@@ -145,8 +146,8 @@ namespace WinBoostHotkeys
             else
             {
                 MessageBox.Show(
-                    "Failed to change boost mode. Please ensure the application is running with administrator privileges.",
-                    "Error",
+                    Strings.ErrorBoostModeFailed,
+                    Strings.ErrorTitle,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
@@ -175,8 +176,7 @@ namespace WinBoostHotkeys
         {
             if (_toggleBoostMenuItem == null) return;
 
-            string state = _currentBoostMode == BoostMode.Aggressive ? "On" : "Off";
-            _toggleBoostMenuItem.Text = $"Boost ({state})";
+            _toggleBoostMenuItem.Text = Strings.MenuBoost;
             _toggleBoostMenuItem.Checked = _currentBoostMode == BoostMode.Aggressive;
         }
 

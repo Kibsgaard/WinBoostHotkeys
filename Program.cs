@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Windows.Forms;
+using WinBoostHotkeys.Resources;
 
 namespace WinBoostHotkeys
 {
@@ -20,8 +21,8 @@ namespace WinBoostHotkeys
             {
                 // Another instance is already running
                 MessageBox.Show(
-                    "WinBoostHotkeys is already running.",
-                    "WinBoostHotkeys",
+                    Strings.MessageAlreadyRunning,
+                    Strings.AppName,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;

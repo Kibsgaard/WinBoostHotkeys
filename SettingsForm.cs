@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using WinBoostHotkeys.Resources;
 
 namespace WinBoostHotkeys
 {
@@ -36,7 +37,7 @@ namespace WinBoostHotkeys
 
         private void InitializeComponent()
         {
-            this.Text = "Settings";
+            this.Text = Strings.SettingsTitle;
             this.Size = new Size(600, 500);
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -51,7 +52,7 @@ namespace WinBoostHotkeys
             // Hotkey On
             var hotkeyOnLabel = new Label
             {
-                Text = "Hotkey (Boost On):",
+                Text = Strings.LabelHotkeyBoostOn,
                 Location = new Point(20, yPos),
                 Size = new Size(labelWidth, 23)
             };
@@ -69,7 +70,7 @@ namespace WinBoostHotkeys
             // Hotkey Off
             var hotkeyOffLabel = new Label
             {
-                Text = "Hotkey (Boost Off):",
+                Text = Strings.LabelHotkeyBoostOff,
                 Location = new Point(20, yPos),
                 Size = new Size(labelWidth, 23)
             };
@@ -87,7 +88,7 @@ namespace WinBoostHotkeys
             // Launch State
             var launchStateLabel = new Label
             {
-                Text = "Launch State:",
+                Text = Strings.LabelLaunchState,
                 Location = new Point(20, yPos),
                 Size = new Size(labelWidth, 23)
             };
@@ -99,7 +100,7 @@ namespace WinBoostHotkeys
                 Size = new Size(controlWidth, 23),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
-            _launchStateComboBox.Items.AddRange(new[] { "Previous", "On", "Off" });
+            _launchStateComboBox.Items.AddRange(new[] { Strings.LaunchStatePrevious, Strings.BoostOn, Strings.BoostOff });
             this.Controls.Add(_launchStateComboBox);
 
             yPos += 40;
@@ -107,7 +108,7 @@ namespace WinBoostHotkeys
             // Network Rules
             var networkRulesLabel = new Label
             {
-                Text = "Network Rules:",
+                Text = Strings.LabelNetworkRules,
                 Location = new Point(20, yPos),
                 Size = new Size(labelWidth, 23)
             };
@@ -125,9 +126,9 @@ namespace WinBoostHotkeys
                 MultiSelect = false
             };
 
-            _networkRulesGrid.Columns.Add("Type", "Type");
-            _networkRulesGrid.Columns.Add("SSID", "SSID");
-            _networkRulesGrid.Columns.Add("Boost Mode", "Boost Mode");
+            _networkRulesGrid.Columns.Add(Strings.GridColumnType, Strings.GridColumnType);
+            _networkRulesGrid.Columns.Add(Strings.GridColumnSSID, Strings.GridColumnSSID);
+            _networkRulesGrid.Columns.Add(Strings.GridColumnBoostMode, Strings.GridColumnBoostMode);
 
             _networkRulesGrid.Columns[0].Width = 100;
             _networkRulesGrid.Columns[1].Width = 200;
@@ -140,11 +141,11 @@ namespace WinBoostHotkeys
             // Make Type column a combo box
             var typeColumn = new DataGridViewComboBoxColumn
             {
-                Name = "Type",
-                HeaderText = "Type",
+                Name = Strings.GridColumnType,
+                HeaderText = Strings.GridColumnType,
                 Width = 100
             };
-            typeColumn.Items.AddRange("WiFi", "Ethernet");
+            typeColumn.Items.AddRange(Strings.NetworkTypeWiFi, Strings.NetworkTypeEthernet);
             _networkRulesGrid.Columns.RemoveAt(0);
             _networkRulesGrid.Columns.Insert(0, typeColumn);
 
@@ -152,10 +153,10 @@ namespace WinBoostHotkeys
             var boostModeColumn = new DataGridViewComboBoxColumn
             {
                 Name = "BoostMode",
-                HeaderText = "Boost Mode",
+                HeaderText = Strings.GridColumnBoostMode,
                 Width = 150
             };
-            boostModeColumn.Items.AddRange("On", "Off");
+            boostModeColumn.Items.AddRange(Strings.BoostOn, Strings.BoostOff);
             _networkRulesGrid.Columns.RemoveAt(2);
             _networkRulesGrid.Columns.Insert(2, boostModeColumn);
 
@@ -169,7 +170,7 @@ namespace WinBoostHotkeys
             // Buttons for network rules
             _addRuleButton = new Button
             {
-                Text = "Add Rule",
+                Text = Strings.ButtonAddRule,
                 Location = new Point(20, yPos),
                 Size = new Size(100, 30)
             };
@@ -178,7 +179,7 @@ namespace WinBoostHotkeys
 
             _removeRuleButton = new Button
             {
-                Text = "Remove Rule",
+                Text = Strings.ButtonRemoveRule,
                 Location = new Point(130, yPos),
                 Size = new Size(100, 30)
             };
@@ -190,7 +191,7 @@ namespace WinBoostHotkeys
             // OK/Cancel buttons
             _okButton = new Button
             {
-                Text = "OK",
+                Text = Strings.ButtonOK,
                 Location = new Point(400, yPos),
                 Size = new Size(75, 30),
                 DialogResult = DialogResult.OK
@@ -200,7 +201,7 @@ namespace WinBoostHotkeys
 
             _cancelButton = new Button
             {
-                Text = "Cancel",
+                Text = Strings.ButtonCancel,
                 Location = new Point(485, yPos),
                 Size = new Size(75, 30),
                 DialogResult = DialogResult.Cancel
@@ -221,9 +222,9 @@ namespace WinBoostHotkeys
             foreach (var rule in _settings.NetworkRules)
             {
                 int rowIndex = _networkRulesGrid.Rows.Add();
-                _networkRulesGrid.Rows[rowIndex].Cells[0].Value = rule.IsEthernet ? "Ethernet" : "WiFi";
+                _networkRulesGrid.Rows[rowIndex].Cells[0].Value = rule.IsEthernet ? Strings.NetworkTypeEthernet : Strings.NetworkTypeWiFi;
                 _networkRulesGrid.Rows[rowIndex].Cells[1].Value = rule.Ssid ?? "";
-                _networkRulesGrid.Rows[rowIndex].Cells[2].Value = rule.BoostMode == BoostMode.Aggressive ? "On" : "Off";
+                _networkRulesGrid.Rows[rowIndex].Cells[2].Value = rule.BoostMode == BoostMode.Aggressive ? Strings.BoostOn : Strings.BoostOff;
             }
         }
 
@@ -244,9 +245,9 @@ namespace WinBoostHotkeys
 
                 var rule = new NetworkRule
                 {
-                    IsEthernet = type == "Ethernet",
-                    Ssid = type == "WiFi" ? ssid : null,
-                    BoostMode = boostMode == "On" ? BoostMode.Aggressive : BoostMode.Disabled
+                    IsEthernet = type == Strings.NetworkTypeEthernet,
+                    Ssid = type == Strings.NetworkTypeWiFi ? ssid : null,
+                    BoostMode = boostMode == Strings.BoostOn ? BoostMode.Aggressive : BoostMode.Disabled
                 };
                 _settings.NetworkRules.Add(rule);
             }
@@ -255,9 +256,9 @@ namespace WinBoostHotkeys
         private void AddRuleButton_Click(object? sender, EventArgs e)
         {
             int rowIndex = _networkRulesGrid.Rows.Add();
-            _networkRulesGrid.Rows[rowIndex].Cells[0].Value = "WiFi";
+            _networkRulesGrid.Rows[rowIndex].Cells[0].Value = Strings.NetworkTypeWiFi;
             _networkRulesGrid.Rows[rowIndex].Cells[1].Value = "";
-            _networkRulesGrid.Rows[rowIndex].Cells[2].Value = "On";
+            _networkRulesGrid.Rows[rowIndex].Cells[2].Value = Strings.BoostOn;
         }
 
         private void RemoveRuleButton_Click(object? sender, EventArgs e)

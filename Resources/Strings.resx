@@ -62,7 +62,7 @@
     <value>WinBoostHotkeys</value>
   </data>
   <data name="MenuToggleBoost" xml:space="preserve">
-    <value>Toggle Boost</value>
+    <value>Toggle</value>
   </data>
   <data name="MenuSettings" xml:space="preserve">
     <value>Settings</value>
@@ -75,5 +75,68 @@
   </data>
   <data name="BoostOff" xml:space="preserve">
     <value>Off</value>
+  </data>
+  <data name="MenuBoost" xml:space="preserve">
+    <value>Boost</value>
+  </data>
+  <data name="ErrorBoostModeFailed" xml:space="preserve">
+    <value>Failed to change boost mode. Please ensure the application is running with administrator privileges.</value>
+  </data>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="MessageAlreadyRunning" xml:space="preserve">
+    <value>WinBoostHotkeys is already running.</value>
+  </data>
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="LabelHotkeyBoostOn" xml:space="preserve">
+    <value>Hotkey (Boost On):</value>
+  </data>
+  <data name="LabelHotkeyBoostOff" xml:space="preserve">
+    <value>Hotkey (Boost Off):</value>
+  </data>
+  <data name="LabelLaunchState" xml:space="preserve">
+    <value>Launch State:</value>
+  </data>
+  <data name="LabelNetworkRules" xml:space="preserve">
+    <value>Network Rules:</value>
+  </data>
+  <data name="LaunchStatePrevious" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="GridColumnType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="GridColumnSSID" xml:space="preserve">
+    <value>SSID</value>
+  </data>
+  <data name="GridColumnBoostMode" xml:space="preserve">
+    <value>Boost Mode</value>
+  </data>
+  <data name="NetworkTypeWiFi" xml:space="preserve">
+    <value>WiFi</value>
+  </data>
+  <data name="NetworkTypeEthernet" xml:space="preserve">
+    <value>Ethernet</value>
+  </data>
+  <data name="ButtonAddRule" xml:space="preserve">
+    <value>Add Rule</value>
+  </data>
+  <data name="ButtonRemoveRule" xml:space="preserve">
+    <value>Remove Rule</value>
+  </data>
+  <data name="ButtonOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ButtonCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="HotkeyPressKeyCombination" xml:space="preserve">
+    <value>Press a key combination...</value>
+  </data>
+  <data name="HotkeyNone" xml:space="preserve">
+    <value>None</value>
   </data>
 </root>

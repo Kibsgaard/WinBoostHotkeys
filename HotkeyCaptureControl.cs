@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using WinBoostHotkeys.Resources;
 
 namespace WinBoostHotkeys
 {
@@ -37,7 +38,7 @@ namespace WinBoostHotkeys
         private void StartCapture()
         {
             _capturing = true;
-            Text = "Press a key combination...";
+            Text = Strings.HotkeyPressKeyCombination;
             BackColor = System.Drawing.Color.LightYellow;
             Focus();
         }
@@ -95,7 +96,7 @@ namespace WinBoostHotkeys
         {
             if (_currentHotkey == null)
             {
-                Text = "None";
+                Text = Strings.HotkeyNone;
                 return;
             }
 
