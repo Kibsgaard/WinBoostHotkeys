@@ -142,6 +142,4 @@ AI: [Creates SettingsForm.cs, updates related files, concise summary]
 
 ## Project Status Tracking
 
-- Check `plan.md` for current phase and priorities
-- Mark completed items
-- Focus on one phase at a time
+- Add only major features to README.md. If in doubt, ask.

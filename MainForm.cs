@@ -67,7 +67,7 @@ namespace WinBoostHotkeys
                 Visible = true
             };
 
-            _trayIcon.DoubleClick += TrayIcon_DoubleClick;
+            _trayIcon.MouseClick += TrayIcon_MouseClick;
         }
 
         private void InitializeHotkeys()
@@ -185,9 +185,12 @@ namespace WinBoostHotkeys
             ToggleBoost();
         }
 
-        private void TrayIcon_DoubleClick(object? sender, EventArgs e)
+        private void TrayIcon_MouseClick(object? sender, MouseEventArgs e)
         {
-            ToggleBoost();
+            if (e.Button == MouseButtons.Left)
+            {
+                ToggleBoost();
+            }
         }
 
         private void ToggleBoost()
