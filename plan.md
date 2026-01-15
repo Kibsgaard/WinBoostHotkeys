@@ -14,13 +14,13 @@ Windows tray application (.NET 10 C#) to toggle Processor Performance Boost Mode
 ## Implementation Tasks
 
 ### Phase 1: Core Functionality
-1. **Project Setup**
+1. **Project Setup** ✅
    - Create .NET 10 Windows Forms application
    - Configure for single-instance (mutex)
    - Add required NuGet packages
    - Set up resource files (.resx) for localization (strings externalized from start)
 
-2. **Power Plan Management**
+2. **Power Plan Management** ✅
    - Implement `PowerPlanManager` class
    - Methods: GetCurrentBoostMode(), SetBoostMode(Aggressive/Disabled)
    - Use `powercfg.exe /setacvalueindex`, `/setdcvalueindex` and `/setactive` commands
