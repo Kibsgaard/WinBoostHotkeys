@@ -109,9 +109,15 @@ namespace WinBoostHotkeys
                 {
                     matches = true;
                 }
-                else if (!rule.IsEthernet && !string.IsNullOrEmpty(rule.Ssid))
+                else if (!rule.IsEthernet)
                 {
-                    matches = e.WifiSsid == rule.Ssid;
+                    if(string.IsNullOrEmpty(rule.Ssid))
+                    {
+                        matches = true;
+                    } else
+                    {
+                        matches = e.WifiSsid == rule.Ssid;
+                    }   
                 }
 
                 if (matches)
