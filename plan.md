@@ -26,7 +26,7 @@ Windows tray application (.NET 10 C#) to toggle Processor Performance Boost Mode
    - Use `powercfg.exe /setacvalueindex`, `/setdcvalueindex` and `/setactive` commands
    - Handle GUID retrieval for current power plan
 
-3. **Tray Icon & UI**
+3. **Tray Icon & UI** ✅
    - Create `NotifyIcon` with context menu
    - Menu items: "Boost (with state checkmark)", "Settings", "Exit"
    - Icon state management (green=ON, blue=OFF)
