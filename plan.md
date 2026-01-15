@@ -33,32 +33,32 @@ Windows tray application (.NET 10 C#) to toggle Processor Performance Boost Mode
    - Update icon on state change
 
 ### Phase 2: Settings & Persistence
-4. **Settings Model & Storage**
+4. **Settings Model & Storage** ✅
    - Create `Settings` class (JSON serializable)
    - Properties: HotkeyOn, HotkeyOff, LaunchState, NetworkRules
    - Implement `SettingsManager` for load/save to AppData
 
-5. **Settings UI**
+5. **Settings UI** ✅
    - Create Settings form
    - Hotkey capture controls (key combination picker)
    - Launch state dropdown (Previous/On/Off)
    - Network rules table (SSID/Type → State)
 
 ### Phase 3: Hotkeys
-6. **Global Hotkey Registration**
+6. **Global Hotkey Registration** ✅
    - Implement `HotkeyManager` using RegisterHotKey Win32 API
    - Handle WM_HOTKEY messages in message loop
    - Map hotkeys to Boost On/Off actions
    - Load hotkeys from settings on startup
 
 ### Phase 4: Network Detection
-7. **Network Monitoring**
+7. **Network Monitoring** ✅
    - Implement `NetworkMonitor` class
    - Detect WiFi SSID changes (NetworkInformation APIs)
    - Detect Ethernet connection changes
    - Match against settings rules and apply state
 
-8. **Launch & Network Logic**
+8. **Launch & Network Logic** ✅
    - On startup: Apply launch state (Previous/On/Off)
    - Monitor network changes and apply matching rules
    - Persist "Previous" state on state change
