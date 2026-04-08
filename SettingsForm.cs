@@ -12,6 +12,7 @@ namespace WinBoostHotkeys
         private HotkeyCaptureControl _hotkeyOnControl = null!;
         private HotkeyCaptureControl _hotkeyOffControl = null!;
         private ComboBox _launchStateComboBox = null!;
+        private CheckBox _autoLaunchCheckBox = null!;
         private DataGridView _networkRulesGrid = null!;
         private Button _okButton = null!;
         private Button _cancelButton = null!;
@@ -38,7 +39,7 @@ namespace WinBoostHotkeys
         private void InitializeComponent()
         {
             this.Text = Strings.SettingsTitle;
-            this.Size = new Size(600, 500);
+            this.Size = new Size(600, 540);
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -102,6 +103,17 @@ namespace WinBoostHotkeys
             };
             _launchStateComboBox.Items.AddRange(new[] { Strings.LaunchStatePrevious, Strings.BoostOn, Strings.BoostOff });
             this.Controls.Add(_launchStateComboBox);
+
+            yPos += 35;
+
+            // Auto Launch
+            _autoLaunchCheckBox = new CheckBox
+            {
+                Text = Strings.LabelStartWithWindows,
+                Location = new Point(20, yPos),
+                Size = new Size(controlWidth, 23)
+            };
+            this.Controls.Add(_autoLaunchCheckBox);
 
             yPos += 40;
 
@@ -217,6 +229,7 @@ namespace WinBoostHotkeys
             _hotkeyOnControl.Hotkey = _settings.HotkeyOn;
             _hotkeyOffControl.Hotkey = _settings.HotkeyOff;
             _launchStateComboBox.SelectedIndex = (int)_settings.LaunchState;
+            _autoLaunchCheckBox.Checked = _settings.AutoLaunch;
 
             _networkRulesGrid.Rows.Clear();
             foreach (var rule in _settings.NetworkRules)
@@ -233,6 +246,16 @@ namespace WinBoostHotkeys
             _settings.HotkeyOn = _hotkeyOnControl.Hotkey;
             _settings.HotkeyOff = _hotkeyOffControl.Hotkey;
             _settings.LaunchState = (LaunchState)_launchStateComboBox.SelectedIndex;
+            _settings.AutoLaunch = _autoLaunchCheckBox.Checked;
+
+            try
+            {
+                AutoLaunchManager.SetAutoLaunch(_settings.AutoLaunch);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to set auto-launch: {ex.Message}", Strings.ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             _settings.NetworkRules.Clear();
             foreach (DataGridViewRow row in _networkRulesGrid.Rows)

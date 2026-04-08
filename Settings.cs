@@ -43,6 +43,7 @@ namespace WinBoostHotkeys
     {
         public HotkeyConfig? HotkeyOn { get; set; }
         public HotkeyConfig? HotkeyOff { get; set; }
+        public bool AutoLaunch { get; set; }
         public LaunchState LaunchState { get; set; } = LaunchState.Previous;
         public List<NetworkRule> NetworkRules { get; set; } = new();
         public BoostMode? PreviousBoostMode { get; set; } // For "Previous" launch state

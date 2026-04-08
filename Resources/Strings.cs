@@ -21,6 +21,7 @@ namespace WinBoostHotkeys.Resources
         public static string LabelHotkeyBoostOff => ResourceManager.GetString("LabelHotkeyBoostOff") ?? "Hotkey (Boost Off):";
         public static string LabelLaunchState => ResourceManager.GetString("LabelLaunchState") ?? "Launch State:";
         public static string LabelNetworkRules => ResourceManager.GetString("LabelNetworkRules") ?? "Network Rules:";
+        public static string LabelStartWithWindows => ResourceManager.GetString("LabelStartWithWindows") ?? "Start with Windows";
         public static string LaunchStatePrevious => ResourceManager.GetString("LaunchStatePrevious") ?? "Previous";
         public static string GridColumnType => ResourceManager.GetString("GridColumnType") ?? "Type";
         public static string GridColumnSSID => ResourceManager.GetString("GridColumnSSID") ?? "SSID";
