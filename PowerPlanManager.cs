@@ -18,6 +18,34 @@ namespace WinBoostHotkeys
         private static readonly Regex GuidPattern = new(@"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private static readonly Regex BoostModeValuePattern = new(@"Current AC Power Setting Index:\s*0x([0-9a-f]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
+        public PowerPlanManager()
+        {
+            EnsureSettingVisible();
+        }
+
+        private void EnsureSettingVisible()
+        {
+            try
+            {
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "powercfg.exe",
+                    Arguments = $"-attributes {ProcessorBoostSubGuid} {ProcessorBoostSettingGuid} -ATTRIB_HIDE",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var process = Process.Start(processStartInfo);
+                process?.WaitForExit();
+            }
+            catch
+            {
+                // Ignore any errors during initialization
+            }
+        }
+
         /// <summary>
         /// Gets the current active power scheme GUID
         /// </summary>

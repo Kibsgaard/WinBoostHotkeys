@@ -38,187 +38,237 @@ namespace WinBoostHotkeys
 
         private void InitializeComponent()
         {
-            this.Text = Strings.SettingsTitle;
-            this.Size = new Size(600, 540);
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
+            var version = Application.ProductVersion.Split('+')[0];
+            this.Text = $"{Application.ProductName} v{version} - {Strings.SettingsTitle}";
+            this.ClientSize = new Size(600, 540);
+            this.MinimumSize = new Size(550, 450);
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
             this.MinimizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
+            this.AutoScaleMode = AutoScaleMode.Dpi;
 
-            int yPos = 20;
-            int labelWidth = 150;
-            int controlX = 180;
-            int controlWidth = 300;
+            var mainPanel = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 9,
+                Padding = new Padding(15)
+            };
+            mainPanel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            mainPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+
+            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            mainPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
             // Hotkey On
             var hotkeyOnLabel = new Label
             {
                 Text = Strings.LabelHotkeyBoostOn,
-                Location = new Point(20, yPos),
-                Size = new Size(labelWidth, 23)
+                Anchor = AnchorStyles.Left | AnchorStyles.Top,
+                AutoSize = true,
+                Margin = new Padding(0, 5, 10, 10)
             };
-            this.Controls.Add(hotkeyOnLabel);
-
             _hotkeyOnControl = new HotkeyCaptureControl
             {
-                Location = new Point(controlX, yPos),
-                Size = new Size(controlWidth, 23)
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                Margin = new Padding(0, 0, 0, 10)
             };
-            this.Controls.Add(_hotkeyOnControl);
-
-            yPos += 35;
 
             // Hotkey Off
             var hotkeyOffLabel = new Label
             {
                 Text = Strings.LabelHotkeyBoostOff,
-                Location = new Point(20, yPos),
-                Size = new Size(labelWidth, 23)
+                Anchor = AnchorStyles.Left | AnchorStyles.Top,
+                AutoSize = true,
+                Margin = new Padding(0, 5, 10, 10)
             };
-            this.Controls.Add(hotkeyOffLabel);
-
             _hotkeyOffControl = new HotkeyCaptureControl
             {
-                Location = new Point(controlX, yPos),
-                Size = new Size(controlWidth, 23)
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                Margin = new Padding(0, 0, 0, 10)
             };
-            this.Controls.Add(_hotkeyOffControl);
-
-            yPos += 35;
 
             // Launch State
             var launchStateLabel = new Label
             {
                 Text = Strings.LabelLaunchState,
-                Location = new Point(20, yPos),
-                Size = new Size(labelWidth, 23)
+                Anchor = AnchorStyles.Left | AnchorStyles.Top,
+                AutoSize = true,
+                Margin = new Padding(0, 5, 10, 10)
             };
-            this.Controls.Add(launchStateLabel);
-
             _launchStateComboBox = new ComboBox
             {
-                Location = new Point(controlX, yPos),
-                Size = new Size(controlWidth, 23),
-                DropDownStyle = ComboBoxStyle.DropDownList
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                Margin = new Padding(0, 0, 0, 10)
             };
-            _launchStateComboBox.Items.AddRange(new[] { Strings.LaunchStatePrevious, Strings.BoostOn, Strings.BoostOff });
-            this.Controls.Add(_launchStateComboBox);
-
-            yPos += 35;
+            _launchStateComboBox.Items.AddRange(new object[] { Strings.LaunchStatePrevious, Strings.BoostOn, Strings.BoostOff });
 
             // Auto Launch
             _autoLaunchCheckBox = new CheckBox
             {
                 Text = Strings.LabelStartWithWindows,
-                Location = new Point(20, yPos),
-                Size = new Size(controlWidth, 23)
+                AutoSize = true,
+                Margin = new Padding(0, 0, 0, 15)
             };
-            this.Controls.Add(_autoLaunchCheckBox);
 
-            yPos += 40;
-
-            // Network Rules
+            // Network Rules Label
             var networkRulesLabel = new Label
             {
                 Text = Strings.LabelNetworkRules,
-                Location = new Point(20, yPos),
-                Size = new Size(labelWidth, 23)
+                AutoSize = true,
+                Margin = new Padding(0, 0, 0, 5)
             };
-            this.Controls.Add(networkRulesLabel);
 
-            yPos += 25;
+            // Network Rules Info Label
+            var networkRulesInfoLabel = new Label
+            {
+                Text = Strings.LabelNetworkRulesInfo,
+                AutoSize = true,
+                UseMnemonic = false,
+                ForeColor = SystemColors.GrayText,
+                Margin = new Padding(0, 0, 0, 5)
+            };
 
+            // Grid
             _networkRulesGrid = new DataGridView
             {
-                Location = new Point(20, yPos),
-                Size = new Size(540, 200),
+                Dock = DockStyle.Fill,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 AllowUserToAddRows = false,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                MultiSelect = false
+                MultiSelect = false,
+                Margin = new Padding(0, 0, 0, 10),
+                BackgroundColor = SystemColors.Window
             };
 
             _networkRulesGrid.Columns.Add(Strings.GridColumnType, Strings.GridColumnType);
             _networkRulesGrid.Columns.Add(Strings.GridColumnSSID, Strings.GridColumnSSID);
             _networkRulesGrid.Columns.Add(Strings.GridColumnBoostMode, Strings.GridColumnBoostMode);
 
-            _networkRulesGrid.Columns[0].Width = 100;
-            _networkRulesGrid.Columns[1].Width = 200;
-            _networkRulesGrid.Columns[2].Width = 150;
-
             _networkRulesGrid.Columns[0].ReadOnly = true;
             _networkRulesGrid.Columns[1].ReadOnly = false;
             _networkRulesGrid.Columns[2].ReadOnly = false;
+            
+            _networkRulesGrid.Columns[1].FillWeight = 50;
 
-            // Make Type column a combo box
             var typeColumn = new DataGridViewComboBoxColumn
             {
                 Name = Strings.GridColumnType,
                 HeaderText = Strings.GridColumnType,
-                Width = 100
+                MinimumWidth = 100,
+                FillWeight = 20
             };
-            typeColumn.Items.AddRange(Strings.NetworkTypeWiFi, Strings.NetworkTypeEthernet);
+            typeColumn.Items.AddRange(new object[] { Strings.NetworkTypeWiFi, Strings.NetworkTypeEthernet });
             _networkRulesGrid.Columns.RemoveAt(0);
             _networkRulesGrid.Columns.Insert(0, typeColumn);
 
-            // Make Boost Mode column a combo box
             var boostModeColumn = new DataGridViewComboBoxColumn
             {
                 Name = "BoostMode",
                 HeaderText = Strings.GridColumnBoostMode,
-                Width = 150
+                MinimumWidth = 100,
+                FillWeight = 30
             };
-            boostModeColumn.Items.AddRange(Strings.BoostOn, Strings.BoostOff);
+            boostModeColumn.Items.AddRange(new object[] { Strings.BoostOn, Strings.BoostOff });
             _networkRulesGrid.Columns.RemoveAt(2);
             _networkRulesGrid.Columns.Insert(2, boostModeColumn);
 
-            // Handle Type change to clear SSID for Ethernet
             _networkRulesGrid.CellValueChanged += NetworkRulesGrid_CellValueChanged;
 
-            this.Controls.Add(_networkRulesGrid);
-
-            yPos += 210;
-
-            // Buttons for network rules
+            // Rules Buttons
+            var rulesButtonsPanel = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                AutoSize = true,
+                Margin = new Padding(0, 0, 0, 15)
+            };
             _addRuleButton = new Button
             {
                 Text = Strings.ButtonAddRule,
-                Location = new Point(20, yPos),
-                Size = new Size(100, 30)
+                AutoSize = true,
+                MinimumSize = new Size(100, 30),
+                Margin = new Padding(0)
             };
             _addRuleButton.Click += AddRuleButton_Click;
-            this.Controls.Add(_addRuleButton);
-
+            
             _removeRuleButton = new Button
             {
                 Text = Strings.ButtonRemoveRule,
-                Location = new Point(130, yPos),
-                Size = new Size(100, 30)
+                AutoSize = true,
+                MinimumSize = new Size(100, 30),
+                Margin = new Padding(10, 0, 0, 0)
             };
             _removeRuleButton.Click += RemoveRuleButton_Click;
-            this.Controls.Add(_removeRuleButton);
+            
+            rulesButtonsPanel.Controls.Add(_addRuleButton);
+            rulesButtonsPanel.Controls.Add(_removeRuleButton);
 
-            yPos += 50;
-
-            // OK/Cancel buttons
-            _okButton = new Button
+            // OK/Cancel Buttons
+            var okCancelPanel = new FlowLayoutPanel
             {
-                Text = Strings.ButtonOK,
-                Location = new Point(400, yPos),
-                Size = new Size(75, 30),
-                DialogResult = DialogResult.OK
+                Dock = DockStyle.Fill,
+                AutoSize = true,
+                FlowDirection = FlowDirection.RightToLeft,
+                Margin = new Padding(0)
             };
-            _okButton.Click += OkButton_Click;
-            this.Controls.Add(_okButton);
-
             _cancelButton = new Button
             {
                 Text = Strings.ButtonCancel,
-                Location = new Point(485, yPos),
-                Size = new Size(75, 30),
-                DialogResult = DialogResult.Cancel
+                AutoSize = true,
+                MinimumSize = new Size(80, 30),
+                DialogResult = DialogResult.Cancel,
+                Margin = new Padding(10, 0, 0, 0)
             };
-            this.Controls.Add(_cancelButton);
+            _okButton = new Button
+            {
+                Text = Strings.ButtonOK,
+                AutoSize = true,
+                MinimumSize = new Size(80, 30),
+                DialogResult = DialogResult.OK,
+                Margin = new Padding(0)
+            };
+            _okButton.Click += OkButton_Click;
+            
+            okCancelPanel.Controls.Add(_cancelButton);
+            okCancelPanel.Controls.Add(_okButton);
+
+            mainPanel.Controls.Add(hotkeyOnLabel, 0, 0);
+            mainPanel.Controls.Add(_hotkeyOnControl, 1, 0);
+            
+            mainPanel.Controls.Add(hotkeyOffLabel, 0, 1);
+            mainPanel.Controls.Add(_hotkeyOffControl, 1, 1);
+            
+            mainPanel.Controls.Add(launchStateLabel, 0, 2);
+            mainPanel.Controls.Add(_launchStateComboBox, 1, 2);
+
+            mainPanel.Controls.Add(_autoLaunchCheckBox, 0, 3);
+            mainPanel.SetColumnSpan(_autoLaunchCheckBox, 2);
+
+            mainPanel.Controls.Add(networkRulesLabel, 0, 4);
+            mainPanel.SetColumnSpan(networkRulesLabel, 2);
+
+            mainPanel.Controls.Add(networkRulesInfoLabel, 0, 5);
+            mainPanel.SetColumnSpan(networkRulesInfoLabel, 2);
+
+            mainPanel.Controls.Add(_networkRulesGrid, 0, 6);
+            mainPanel.SetColumnSpan(_networkRulesGrid, 2);
+
+            mainPanel.Controls.Add(rulesButtonsPanel, 0, 7);
+            mainPanel.SetColumnSpan(rulesButtonsPanel, 2);
+
+            mainPanel.Controls.Add(okCancelPanel, 0, 8);
+            mainPanel.SetColumnSpan(okCancelPanel, 2);
+
+            this.Controls.Add(mainPanel);
 
             this.AcceptButton = _okButton;
             this.CancelButton = _cancelButton;

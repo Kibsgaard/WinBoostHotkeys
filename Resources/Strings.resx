@@ -103,6 +103,9 @@
   <data name="LabelNetworkRules" xml:space="preserve">
     <value>Network Rules:</value>
   </data>
+  <data name="LabelNetworkRulesInfo" xml:space="preserve">
+    <value>Rules are checked from top to bottom. The first matching rule is used.</value>
+  </data>
   <data name="LaunchStatePrevious" xml:space="preserve">
     <value>Previous</value>
   </data>

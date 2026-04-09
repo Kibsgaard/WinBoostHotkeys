@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WinBoostHotkeys.Resources;
 
@@ -15,6 +16,10 @@ namespace WinBoostHotkeys
         private Settings _settings;
         private HotkeyManager? _hotkeyManager;
         private NetworkMonitor? _networkMonitor;
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
 
         public MainForm()
         {
@@ -62,7 +67,6 @@ namespace WinBoostHotkeys
             _trayIcon = new NotifyIcon
             {
                 Icon = IconHelper.CreateBlueIcon(), // Default to OFF (blue)
-                ContextMenuStrip = _contextMenu,
                 Text = Strings.AppName,
                 Visible = true
             };
@@ -196,6 +200,11 @@ namespace WinBoostHotkeys
             if (e.Button == MouseButtons.Left)
             {
                 ToggleBoost();
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                SetForegroundWindow(this.Handle);
+                _contextMenu?.Show(Cursor.Position);
             }
         }
 
