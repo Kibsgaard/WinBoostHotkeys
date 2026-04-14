@@ -35,5 +35,6 @@ namespace WinBoostHotkeys.Resources
         public static string ButtonCancel => ResourceManager.GetString("ButtonCancel") ?? "Cancel";
         public static string HotkeyPressKeyCombination => ResourceManager.GetString("HotkeyPressKeyCombination") ?? "Press a key combination...";
         public static string HotkeyNone => ResourceManager.GetString("HotkeyNone") ?? "None";
+        public static string ErrorHotkeyRegistrationFailed => ResourceManager.GetString("ErrorHotkeyRegistrationFailed") ?? "Failed to register one or more hotkeys. They may be reserved by the system or another application.";
     }
 }

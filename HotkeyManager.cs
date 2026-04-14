@@ -22,13 +22,71 @@ namespace WinBoostHotkeys
         private int _nextId = 1;
         private int _hotkeyOnId = -1;
         private int _hotkeyOffId = -1;
+        private int _hotkeyToggleId = -1;
 
         public event EventHandler? HotkeyOnPressed;
         public event EventHandler? HotkeyOffPressed;
+        public event EventHandler? HotkeyTogglePressed;
 
         public HotkeyManager(IntPtr windowHandle)
         {
             _windowHandle = windowHandle;
+        }
+
+        public bool RegisterHotkeys(HotkeyConfig? on, HotkeyConfig? off)
+        {
+            UnregisterAll();
+            bool success = true;
+
+            if (on != null && off != null && on.Equals(off))
+            {
+                _hotkeyToggleId = _nextId++;
+                success &= RegisterHotKey(_windowHandle, _hotkeyToggleId, GetModifiers(on), on.KeyCode);
+            }
+            else
+            {
+                if (on != null)
+                {
+                    _hotkeyOnId = _nextId++;
+                    success &= RegisterHotKey(_windowHandle, _hotkeyOnId, GetModifiers(on), on.KeyCode);
+                }
+
+                if (off != null)
+                {
+                    _hotkeyOffId = _nextId++;
+                    success &= RegisterHotKey(_windowHandle, _hotkeyOffId, GetModifiers(off), off.KeyCode);
+                }
+            }
+            return success;
+        }
+
+        private int GetModifiers(HotkeyConfig config)
+        {
+            int modifiers = 0;
+            if (config.Ctrl) modifiers |= MOD_CONTROL;
+            if (config.Alt) modifiers |= MOD_ALT;
+            if (config.Shift) modifiers |= MOD_SHIFT;
+            if (config.Win) modifiers |= MOD_WIN;
+            return modifiers;
+        }
+
+        public void UnregisterAll()
+        {
+            if (_hotkeyOnId != -1)
+            {
+                UnregisterHotKey(_windowHandle, _hotkeyOnId);
+                _hotkeyOnId = -1;
+            }
+            if (_hotkeyOffId != -1)
+            {
+                UnregisterHotKey(_windowHandle, _hotkeyOffId);
+                _hotkeyOffId = -1;
+            }
+            if (_hotkeyToggleId != -1)
+            {
+                UnregisterHotKey(_windowHandle, _hotkeyToggleId);
+                _hotkeyToggleId = -1;
+            }
         }
 
         public bool RegisterHotkeyOn(HotkeyConfig? hotkey)
@@ -41,14 +99,8 @@ namespace WinBoostHotkeys
 
             if (hotkey == null) return true;
 
-            int modifiers = 0;
-            if (hotkey.Ctrl) modifiers |= MOD_CONTROL;
-            if (hotkey.Alt) modifiers |= MOD_ALT;
-            if (hotkey.Shift) modifiers |= MOD_SHIFT;
-            if (hotkey.Win) modifiers |= MOD_WIN;
-
             _hotkeyOnId = _nextId++;
-            return RegisterHotKey(_windowHandle, _hotkeyOnId, modifiers, hotkey.KeyCode);
+            return RegisterHotKey(_windowHandle, _hotkeyOnId, GetModifiers(hotkey), hotkey.KeyCode);
         }
 
         public bool RegisterHotkeyOff(HotkeyConfig? hotkey)
@@ -61,14 +113,8 @@ namespace WinBoostHotkeys
 
             if (hotkey == null) return true;
 
-            int modifiers = 0;
-            if (hotkey.Ctrl) modifiers |= MOD_CONTROL;
-            if (hotkey.Alt) modifiers |= MOD_ALT;
-            if (hotkey.Shift) modifiers |= MOD_SHIFT;
-            if (hotkey.Win) modifiers |= MOD_WIN;
-
             _hotkeyOffId = _nextId++;
-            return RegisterHotKey(_windowHandle, _hotkeyOffId, modifiers, hotkey.KeyCode);
+            return RegisterHotKey(_windowHandle, _hotkeyOffId, GetModifiers(hotkey), hotkey.KeyCode);
         }
 
         public void ProcessMessage(Message m)
@@ -84,22 +130,16 @@ namespace WinBoostHotkeys
                 {
                     HotkeyOffPressed?.Invoke(this, EventArgs.Empty);
                 }
+                else if (id == _hotkeyToggleId)
+                {
+                    HotkeyTogglePressed?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
         public void Dispose()
         {
-            if (_hotkeyOnId != -1)
-            {
-                UnregisterHotKey(_windowHandle, _hotkeyOnId);
-                _hotkeyOnId = -1;
-            }
-
-            if (_hotkeyOffId != -1)
-            {
-                UnregisterHotKey(_windowHandle, _hotkeyOffId);
-                _hotkeyOffId = -1;
-            }
+            UnregisterAll();
         }
     }
 }

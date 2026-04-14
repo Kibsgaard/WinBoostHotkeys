@@ -4,7 +4,7 @@ using WinBoostHotkeys.Resources;
 
 namespace WinBoostHotkeys
 {
-    public class HotkeyCaptureControl : TextBox
+    public class HotkeyCaptureControl : Control
     {
         private bool _capturing = false;
         private HotkeyConfig? _currentHotkey;
@@ -16,100 +16,129 @@ namespace WinBoostHotkeys
             set
             {
                 _currentHotkey = value;
-                UpdateText();
+                Invalidate();
             }
         }
 
         public HotkeyCaptureControl()
         {
-            ReadOnly = true;
+            SetStyle(ControlStyles.Selectable | ControlStyles.StandardClick | ControlStyles.UserPaint, true);
             Cursor = Cursors.Hand;
-            Click += HotkeyCaptureControl_Click;
-            KeyDown += HotkeyCaptureControl_KeyDown;
-            KeyUp += HotkeyCaptureControl_KeyUp;
-            LostFocus += HotkeyCaptureControl_LostFocus;
+            BackColor = System.Drawing.SystemColors.Window;
+            Size = new System.Drawing.Size(120, 23);
         }
 
-        private void HotkeyCaptureControl_Click(object? sender, EventArgs e)
+        public override System.Drawing.Size GetPreferredSize(System.Drawing.Size proposedSize)
         {
+            return new System.Drawing.Size(120, 23);
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
             StartCapture();
         }
 
         private void StartCapture()
         {
             _capturing = true;
-            Text = Strings.HotkeyPressKeyCombination;
-            BackColor = System.Drawing.Color.LightYellow;
             Focus();
+            Invalidate();
         }
 
-        private void HotkeyCaptureControl_KeyDown(object? sender, KeyEventArgs e)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (!_capturing) return;
-
-            // Ignore modifier keys alone
-            if (e.KeyCode == Keys.ControlKey || e.KeyCode == Keys.ShiftKey ||
-                e.KeyCode == Keys.Menu || e.KeyCode == Keys.LWin || e.KeyCode == Keys.RWin)
+            if (!_capturing) 
             {
-                return;
+                return base.ProcessCmdKey(ref msg, keyData);
             }
 
-            // Get modifier states
-            bool ctrl = e.Control;
-            bool alt = e.Alt;
-            bool shift = e.Shift;
-            bool win = (e.KeyCode == Keys.LWin || e.KeyCode == Keys.RWin) ||
-                       ((Control.ModifierKeys & (Keys.LWin | Keys.RWin)) != 0);
+            // Extract main key
+            Keys keyCode = keyData & Keys.KeyCode;
 
-            // Require at least one modifier
+            // Ignore modifier keys alone
+            if (keyCode == Keys.ControlKey || keyCode == Keys.ShiftKey ||
+                keyCode == Keys.Menu || keyCode == Keys.LWin || keyCode == Keys.RWin || keyCode == Keys.None)
+            {
+                return true; // Consume event while capturing
+            }
+
+            // Detect modifiers
+            bool ctrl = (keyData & Keys.Control) == Keys.Control;
+            bool alt = (keyData & Keys.Alt) == Keys.Alt;
+            bool shift = (keyData & Keys.Shift) == Keys.Shift;
+            bool win = (Control.ModifierKeys & Keys.LWin) != 0 || (Control.ModifierKeys & Keys.RWin) != 0;
+
             if (!ctrl && !alt && !shift && !win)
             {
-                return;
+                return true; // Require modifiers, consume event
             }
 
             // Create hotkey config
-            _currentHotkey = new HotkeyConfig(ctrl, alt, shift, win, (int)e.KeyCode);
-            UpdateText();
+            _currentHotkey = new HotkeyConfig(ctrl, alt, shift, win, (int)keyCode);
             StopCapture();
-            e.Handled = true;
-            e.SuppressKeyPress = true;
+            return true; // Event handled
         }
 
-        private void HotkeyCaptureControl_KeyUp(object? sender, KeyEventArgs e)
+        protected override void OnLostFocus(EventArgs e)
         {
-            if (!_capturing) return;
-            e.Handled = true;
-        }
-
-        private void HotkeyCaptureControl_LostFocus(object? sender, EventArgs e)
-        {
+            base.OnLostFocus(e);
             StopCapture();
         }
 
         private void StopCapture()
         {
+            if (!_capturing) return;
             _capturing = false;
-            BackColor = System.Drawing.SystemColors.Window;
+            Invalidate();
         }
 
-        private void UpdateText()
+        protected override void OnPaint(PaintEventArgs e)
         {
-            if (_currentHotkey == null)
+            base.OnPaint(e);
+
+            var g = e.Graphics;
+            var rect = ClientRectangle;
+
+            // Draw background
+            using (var brush = new System.Drawing.SolidBrush(_capturing ? System.Drawing.Color.LightYellow : BackColor))
             {
-                Text = Strings.HotkeyNone;
-                return;
+                g.FillRectangle(brush, rect);
             }
 
-            var parts = new System.Collections.Generic.List<string>();
-            if (_currentHotkey.Ctrl) parts.Add("Ctrl");
-            if (_currentHotkey.Alt) parts.Add("Alt");
-            if (_currentHotkey.Shift) parts.Add("Shift");
-            if (_currentHotkey.Win) parts.Add("Win");
+            // Draw border
+            using (var pen = new System.Drawing.SolidBrush(Focused ? System.Drawing.SystemColors.Highlight : System.Drawing.SystemColors.ControlDark))
+            {
+                var borderRect = rect;
+                borderRect.Width -= 1;
+                borderRect.Height -= 1;
+                g.DrawRectangle(new System.Drawing.Pen(pen), borderRect);
+            }
 
-            string keyName = ((Keys)_currentHotkey.KeyCode).ToString();
-            parts.Add(keyName);
+            // Get text to display
+            string textToShow;
+            if (_capturing)
+            {
+                textToShow = Strings.HotkeyPressKeyCombination;
+            }
+            else if (_currentHotkey == null)
+            {
+                textToShow = Strings.HotkeyNone;
+            }
+            else
+            {
+                var parts = new System.Collections.Generic.List<string>();
+                if (_currentHotkey.Ctrl) parts.Add("Ctrl");
+                if (_currentHotkey.Alt) parts.Add("Alt");
+                if (_currentHotkey.Shift) parts.Add("Shift");
+                if (_currentHotkey.Win) parts.Add("Win");
+                parts.Add(((Keys)_currentHotkey.KeyCode).ToString());
+                textToShow = string.Join(" + ", parts);
+            }
 
-            Text = string.Join(" + ", parts);
+            // Draw text
+            TextRenderer.DrawText(g, textToShow, Font, rect, System.Drawing.SystemColors.ControlText, 
+                TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis);
         }
     }
 }

@@ -30,6 +30,21 @@ namespace WinBoostHotkeys
             Win = win;
             KeyCode = keyCode;
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not HotkeyConfig other) return false;
+            return Ctrl == other.Ctrl &&
+                   Alt == other.Alt &&
+                   Shift == other.Shift &&
+                   Win == other.Win &&
+                   KeyCode == other.KeyCode;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Ctrl, Alt, Shift, Win, KeyCode);
+        }
     }
 
     public class NetworkRule

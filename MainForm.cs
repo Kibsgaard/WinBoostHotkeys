@@ -82,10 +82,13 @@ namespace WinBoostHotkeys
             _hotkeyManager = new HotkeyManager(this.Handle);
             _hotkeyManager.HotkeyOnPressed += HotkeyManager_HotkeyOnPressed;
             _hotkeyManager.HotkeyOffPressed += HotkeyManager_HotkeyOffPressed;
-
+            _hotkeyManager.HotkeyTogglePressed += HotkeyManager_HotkeyTogglePressed;
+ 
             // Register hotkeys from settings
-            _hotkeyManager.RegisterHotkeyOn(_settings.HotkeyOn);
-            _hotkeyManager.RegisterHotkeyOff(_settings.HotkeyOff);
+            if (!_hotkeyManager.RegisterHotkeys(_settings.HotkeyOn, _settings.HotkeyOff))
+            {
+                MessageBox.Show(Strings.ErrorHotkeyRegistrationFailed, Strings.ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void InitializeNetworkMonitor()
@@ -141,6 +144,11 @@ namespace WinBoostHotkeys
         private void HotkeyManager_HotkeyOffPressed(object? sender, EventArgs e)
         {
             SetBoostMode(BoostMode.Disabled);
+        }
+
+        private void HotkeyManager_HotkeyTogglePressed(object? sender, EventArgs e)
+        {
+            ToggleBoost();
         }
 
         private void SetBoostMode(BoostMode mode)
@@ -219,6 +227,9 @@ namespace WinBoostHotkeys
 
         private void SettingsMenuItem_Click(object? sender, EventArgs e)
         {
+            // Unregister hotkeys temporarily so SettingsForm can capture them if they happen to be pressed during assignment
+            _hotkeyManager?.UnregisterAll();
+
             _settings = SettingsManager.Load();
             using var settingsForm = new SettingsForm
             {
@@ -229,9 +240,16 @@ namespace WinBoostHotkeys
             {
                 SettingsManager.Save(_settings);
                 // Re-register hotkeys with new settings
-                _hotkeyManager?.RegisterHotkeyOn(_settings.HotkeyOn);
-                _hotkeyManager?.RegisterHotkeyOff(_settings.HotkeyOff);
+                if (!(_hotkeyManager?.RegisterHotkeys(_settings.HotkeyOn, _settings.HotkeyOff) ?? true))
+                {
+                    MessageBox.Show(Strings.ErrorHotkeyRegistrationFailed, Strings.ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
                 // Network rules are automatically checked on next network change
+            }
+            else
+            {
+                // Re-register old hotkeys if cancelled
+                _hotkeyManager?.RegisterHotkeys(_settings.HotkeyOn, _settings.HotkeyOff);
             }
         }
 
